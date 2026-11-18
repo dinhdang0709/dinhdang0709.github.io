@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<>!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -560,7 +560,48 @@ html.dark .btn-outline-emerald {
 
       </div>
     </section>
-
+<section id="studio-projects-section" class="mt-10 space-y-6">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <span class="badge-emerald">📚 KHO BÀI TẬP & MINI GAME HTML5</span>
+      <h2 class="text-2xl font-extrabold mt-2">Danh Sách Bài Tập & Tệp HTML Tương Tác</h2>
+    </div>
+  </div>
+  <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="studio-card p-6 flex flex-col justify-between gap-4">
+      <div>
+        <span class="badge-emerald">🎮 Mini Game Trắc Nghiệm</span>
+        <h3 class="text-xl font-extrabold mt-3 mb-2">JET JET – Vượt Bão Về Nhà</h3>
+        <p class="text-sm opacity-80 leading-relaxed">Trò chơi trắc nghiệm 10 câu hỏi về mạng lưới giao thông đường bộ TP.HCM (4.044 km, cao tốc, vành đai, quốc lộ, hầm Thủ Thiêm, cầu Phú Mỹ, cầu Sài Gòn 2) với hiệu ứng xe SH &amp; xe Mui Trần vượt chướng ngại vật về đích tại Cổng Chùa.</p>
+      </div>
+      <div class="flex flex-wrap gap-2 pt-2">
+        <a href="jet-jet-vuot-bao-ve-nha.html" target="_blank" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">▶ Mở chơi trực tiếp</a>
+      </div>
+    </div>
+  </div>
+  <div class="studio-card p-6 border-dashed border-2 border-emerald-500/40">
+    <h3 class="text-lg font-extrabold mb-2">📤 Tải thêm tệp HTML từ máy tính</h3>
+    <p class="text-sm opacity-80 mb-4">Chọn một hoặc nhiều tệp <code>.html</code> / <code>.htm</code> từ máy tính để thêm vào danh sách và chạy thử trực tiếp trên trình duyệt.</p>
+    <input type="file" id="localHtmlUpload" accept=".html,.htm" multiple class="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 cursor-pointer" onchange="handleLocalHtmlFiles(this.files)">
+  </div>
+</section>
+<script>
+function handleLocalHtmlFiles(files){
+  const grid = document.getElementById('projects-grid');
+  if(!grid || !files) return;
+  Array.from(files).forEach(file => {
+    const url = URL.createObjectURL(file);
+    const card = document.createElement('div');
+    card.className = 'studio-card p-6 flex flex-col justify-between gap-4';
+    const title = file.name.replace(/\.(html|htm)$/i, '');
+    card.innerHTML = '<div><span class="badge-emerald">💻 Tệp từ máy tính</span><h3 class="text-xl font-extrabold mt-3 mb-2"></h3><p class="text-sm opacity-80">Tệp HTML tải lên từ máy tính (' + Math.round(file.size/1024) + ' KB).</p></div><div class="pt-2"><a target="_blank" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">▶ Mở chơi trực tiếp</a></div>';
+    card.querySelector('h3').textContent = title;
+    card.querySelector('a').href = url;
+    grid.appendChild(card);
+  });
+}
+</script>
+    
   </main>
 
   <!-- Footer -->
