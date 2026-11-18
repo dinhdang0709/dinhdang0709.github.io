@@ -1,0 +1,238 @@
+<!DOCTYPE html<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JET JET – Vượt Bão Về Nhà | Mini Game Giao Thông Đường Bộ TP.HCM</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif}
+body{min-height:100vh;background:linear-gradient(180deg,#0f172a 0%,#1e293b 55%,#0b132b 100%);color:#f8fafc;overflow-x:hidden;position:relative;padding:20px}
+.rain{position:fixed;inset:0;pointer-events:none;background-image:repeating-linear-gradient(105deg,rgba(148,163,184,.18) 0,rgba(148,163,184,.18) 1px,transparent 1px,transparent 14px);animation:storm .45s linear infinite;z-index:0}
+@keyframes storm{from{background-position:0 0}to{background-position:-28px 60px}}
+.wrap{max-width:900px;margin:0 auto;position:relative;z-index:1}
+.header{text-align:center;margin-bottom:18px;background:rgba(15,23,42,.82);border:1px solid rgba(56,189,248,.35);border-radius:18px;padding:18px;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.header h1{font-size:1.75rem;color:#38bdf8;text-shadow:0 0 12px rgba(56,189,248,.45)}
+.header p{color:#cbd5e1;margin-top:6px;font-size:.95rem}
+.vehicle-bar{display:flex;justify-content:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.v-btn{padding:8px 16px;border-radius:999px;border:2px solid #475569;background:#1e293b;color:#f8fafc;cursor:pointer;font-weight:600;transition:.2s}
+.v-btn.active{border-color:#facc15;background:#854d0e;color:#fef08a;box-shadow:0 0 12px rgba(250,204,21,.4)}
+.track-box{background:rgba(30,41,59,.9);border:1px solid #334155;border-radius:16px;padding:16px;margin-bottom:18px}
+.road{position:relative;height:110px;background:linear-gradient(180deg,#334155,#1e293b);border-radius:12px;border-top:3px dashed #94a3b8;border-bottom:3px solid #facc15;overflow:hidden;display:flex;align-items:center}
+.lane-line{position:absolute;top:50%;left:0;right:0;height:3px;background:repeating-linear-gradient(90deg,#facc15 0 26px,transparent 26px 52px);opacity:.7;animation:roadmove 1.2s linear infinite}
+@keyframes roadmove{from{transform:translateX(0)}to{transform:translateX(-52px)}}
+.obstacles{position:absolute;inset:0;pointer-events:none}
+.obs{position:absolute;top:56%;transform:translateY(-50%);font-size:1.35rem;transition:all .4s}
+.obs.cleared{opacity:.2;transform:translateY(-90%) scale(.6)}
+.temple{position:absolute;right:10px;top:50%;transform:translateY(-50%);text-align:center;background:rgba(120,53,15,.85);border:2px solid #fbbf24;border-radius:10px;padding:4px 8px;font-size:.78rem;font-weight:700;color:#fef3c7;z-index:2}
+.racer{position:absolute;left:2%;font-size:2rem;transition:left .6s cubic-bezier(.22,1,.36,1),transform .3s;z-index:3;filter:drop-shadow(0 4px 6px rgba(0,0,0,.6))}
+#racerMain{top:18%}
+#racerBuddy{top:56%;font-size:1.7rem;opacity:.92}
+.racer.jump{transform:translateY(-18px) rotate(-8deg) scale(1.12)}
+.stats{display:flex;justify-content:space-between;margin-top:10px;font-size:.92rem;color:#e2e8f0;font-weight:600}
+.card{background:rgba(15,23,42,.9);border:1px solid #334155;border-radius:18px;padding:22px;box-shadow:0 10px 25px rgba(0,0,0,.35)}
+.q-badge{display:inline-block;background:#0284c7;color:#fff;padding:4px 12px;border-radius:999px;font-size:.82rem;font-weight:700;margin-bottom:10px}
+.q-text{font-size:1.2rem;font-weight:700;line-height:1.45;margin-bottom:16px;color:#f8fafc}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;padding:13px 16px;border-radius:12px;border:1.5px solid #475569;background:#1e293b;color:#f1f5f9;font-size:1rem;cursor:pointer;transition:.2s}
+.opt:hover:not(:disabled){border-color:#38bdf8;background:#0f172a;transform:translateX(4px)}
+.opt.correct{border-color:#22c55e;background:rgba(22,163,74,.25);color:#bbf7d0}
+.opt.wrong{border-color:#ef4444;background:rgba(220,38,38,.25);color:#fecaca}
+.feedback{margin-top:14px;padding:12px 14px;border-radius:10px;background:rgba(30,41,59,.95);border-left:4px solid #38bdf8;font-size:.95rem;line-height:1.45;display:none}
+.next-btn{margin-top:14px;padding:11px 22px;border:none;border-radius:10px;background:linear-gradient(90deg,#0284c7,#2563eb);color:#fff;font-weight:700;font-size:1rem;cursor:pointer;display:none}
+.result{text-align:center;display:none}
+.result h2{font-size:1.65rem;color:#facc15;margin-bottom:10px}
+.result p{color:#cbd5e1;margin-bottom:16px;font-size:1.05rem}
+.restart-btn{padding:12px 26px;border:none;border-radius:12px;background:linear-gradient(90deg,#16a34a,#15803d);color:#fff;font-weight:700;font-size:1rem;cursor:pointer}
+</style>
+</head>
+  ><body>
+<div class="rain"></div>
+<div class="wrap">
+  <div class="header">
+    <h1>⚡ JET JET – Vượt Bão Về Nhà</h1>
+    <p>Mini Game Giao Thông Đường Bộ TP.HCM • Vượt 10 chặng bão về đích tại Cổng Chùa ⛩️</p>
+    <div class="vehicle-bar">
+      <button class="v-btn active" id="btnSH" onclick="pickVehicle('sh')">🛵 Chọn Xe SH (Đồng hành: Mui Trần)</button>
+      <button class="v-btn" id="btnCar" onclick="pickVehicle('car')">🏎️ Chọn Xe Mui Trần (Đồng hành: Xe SH)</button>
+    </div>
+  </div>
+  <div class="track-box">
+    <div class="road">
+      <div class="lane-line"></div>
+      <div class="obstacles" id="obsBox"></div>
+      <div class="racer" id="racerMain">🛵</div>
+      <div class="racer" id="racerBuddy">🏎️</div>
+      <div class="temple">⛩️<br>Cổng Chùa</div>
+    </div>
+    <div class="stats">
+      <span id="stageText">Chặng: 1 / 10</span>
+      <span id="scoreText">Điểm: 0 / 10</span>
+      <span id="vehicleLabel">Đang lái: Xe SH 🛵</span>
+    </div>
+  </div>
+  <div class="card" id="quizCard">
+    <span class="q-badge" id="qBadge">Câu 1 / 10</span>
+    <div class="q-text" id="qText"></div>
+    <div class="opts" id="optsBox"></div>
+    <div class="feedback" id="fbBox"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextQ()">Tiếp tục vượt bão ➜</button>
+  </div>
+  <div class="card result" id="resBox">
+    <h2>🎉 Đã Về Đích Tại Cổng Chùa! ⛩️</h2>
+    <p id="resMsg"></p>
+    <button class="restart-btn" onclick="restart()">🔄 Chơi lại hành trình mới</button>
+  </div>
+</div>
+<script>
+const questions = [
+  {
+    q: "Tổng chiều dài mạng lưới giao thông đường bộ tại TP.HCM hiện nay khoảng bao nhiêu km?",
+    opts: ["2.500 km", "4.044 km", "6.120 km", "1.850 km"],
+    ans: 1,
+    exp: "Mạng lưới giao thông đường bộ TP.HCM có tổng chiều dài khoảng 4.044 km, kết nối nội đô với các vùng kinh tế trọng điểm."
+  },
+  {
+    q: "Tuyến cao tốc TP.HCM – Long Thành – Dầu Giây kết nối trực tiếp TP.HCM với tỉnh nào sau đây?",
+    opts: ["Long An", "Tây Ninh", "Đồng Nai", "Bình Phước"],
+    ans: 2,
+    exp: "Cao tốc Long Thành – Dầu Giây là tuyến huyết mạch cửa ngõ phía Đông, nối TP.HCM với tỉnh Đồng Nai và hướng đi Bà Rịa – Vũng Tàu, Phan Thiết."
+  },
+  {
+    q: "Cao tốc TP.HCM – Trung Lương đóng vai trò là tuyến giao thông trọng điểm kết nối TP.HCM với khu vực nào?",
+    opts: ["Đồng bằng sông Cửu Long", "Tây Nguyên", "Duyên hải Nam Trung Bộ", "Đông Nam Bộ"],
+    ans: 0,
+    exp: "Cao tốc Trung Lương (TP.HCM – Trung Lương) là tuyến cao tốc đầu tiên ở miền Nam, nối TP.HCM với Tiền Giang và vùng Đồng bằng sông Cửu Long."
+  },
+  {
+    q: "Hai tuyến đường vành đai chiến lược đang được đầu tư xây dựng nhằm giảm tải cho nội đô TP.HCM và liên kết vùng là gì?",
+    opts: ["Vành đai 1 và Vành đai 2", "Vành đai 3 và Vành đai 4", "Vành đai 5 và Vành đai 6", "Vành đai Bắc và Vành đai Nam"],
+    ans: 1,
+    exp: "Vành đai 3 và Vành đai 4 là hai tuyến vành đai liên vùng quy mô lớn, giúp phân luồng xe tải và kết nối TP.HCM với Bình Dương, Đồng Nai, Long An, Bà Rịa – Vũng Tàu."
+  },
+  {
+    q: "Quốc lộ 13 là tuyến đường cửa ngõ quan trọng kết nối TP.HCM (khu vực Thủ Đức) với địa phương nào?",
+    opts: ["Long An", "Bình Dương và Bình Phước", "Đồng Nai", "Tiền Giang"],
+    ans: 1,
+    exp: "Quốc lộ 13 đi qua cửa ngõ Đông Bắc TP.HCM, kết nối trực tiếp với Bình Dương, Bình Phước và khu vực Tây Nguyên."
+  },
+  {
+    q: "Quốc lộ 51 nối từ khu vực Đồng Nai (giao với Xa lộ Hà Nội/QL1) dẫn đi thẳng về tỉnh thành nào?",
+    opts: ["Bà Rịa – Vũng Tàu", "Bình Thuận", "Cần Thơ", "Tây Ninh"],
+    ans: 0,
+    exp: "Quốc lộ 51 là tuyến đường huyết mạch kết nối khu vực TP.HCM – Đồng Nai với tỉnh Bà Rịa – Vũng Tàu và cụm cảng Cái Mép – Thị Vải."
+  },
+  {
+    q: "Hai trục đại lộ nổi tiếng ở TP.HCM gồm trục cửa ngõ phía Đông (nay là đường Võ Nguyên Giáp ở đoạn chính) và trục xuyên tâm Đông – Tây (Võ Văn Kiệt – Mai Chí Thọ) là:",
+    opts: ["Xa lộ Hà Nội và Đại lộ Đông – Tây", "Quốc lộ 22 và Đại lộ Nguyễn Văn Linh", "Đường Trường Chinh và Phạm Văn Đồng", "Đường Nguyễn Hữu Thọ và Huỳnh Tấn Phát"],
+    ans: 0,
+    exp: "Xa lộ Hà Nội (cửa ngõ phía Đông) và Đại lộ Đông – Tây (Võ Văn Kiệt – Mai Chí Thọ) là hai trục xương sống quan trọng của giao thông TP.HCM."
+  },
+  {
+    q: "Hầm vượt sông Sài Gòn (Hầm Thủ Thiêm) nằm trên tuyến Đại lộ Đông – Tây có chiều dài toàn hầm là bao nhiêu?",
+    opts: ["950 m", "1.490 m", "2.100 m", "3.200 m"],
+    ans: 1,
+    exp: "Hầm Thủ Thiêm dài 1.490 m, là hầm dìm vượt sông hiện đại nối Quận 1 với Khu đô thị mới Thủ Thiêm (TP. Thủ Đức)."
+  },
+  {
+    q: "Cây cầu dây văng lớn bắc qua sông Sài Gòn nối Quận 7 với TP. Thủ Đức (Quận 2 cũ) mang tên gì?",
+    opts: ["Cầu Thủ Thiêm 1", "Cầu Phú Mỹ", "Cầu Bình Lợi", "Cầu Tân Thuận"],
+    ans: 1,
+    exp: "Cầu Phú Mỹ là cầu dây văng lớn nhất TP.HCM bắc qua sông Sài Gòn, nối Quận 7 với TP. Thủ Đức trên tuyến Vành đai 2."
+  },
+  {
+    q: "Cây cầu nào được xây dựng song song với Cầu Sài Gòn hiện hữu trên trục Xa lộ Hà Nội nhằm giải tỏa ùn tắc cửa ngõ phía Đông?",
+    opts: ["Cầu Sài Gòn 2", "Cầu Ba Son", "Cầu Rạch Chiếc 2", "Cầu Bình Triệu 2"],
+    ans: 0,
+    exp: "Cầu Sài Gòn 2 nằm song song với Cầu Sài Gòn trên trục Xa lộ Hà Nội, góp phần tăng năng lực lưu thông cửa ngõ phía Đông TP.HCM."
+  }
+];
+const obsIcons = ["🌊","🚧","⛈️","🚦","🪵","🌊","🚧","⛈️","🚦","⚠️"];
+let idx = 0, score = 0, answered = false, mainVeh = "sh";
+function renderObs(){
+  const box = document.getElementById("obsBox");
+  box.innerHTML = "";
+  obsIcons.forEach((ic, i) => {
+    const d = document.createElement("div");
+    d.className = "obs" + (i < idx ? " cleared" : "");
+    d.style.left = (12 + i * 7.5) + "%";
+    d.textContent = ic;
+    box.appendChild(d);
+  });
+}
+function pickVehicle(v){
+  mainVeh = v;
+  document.getElementById("btnSH").classList.toggle("active", v === "sh");
+  document.getElementById("btnCar").classList.toggle("active", v === "car");
+  document.getElementById("racerMain").textContent = v === "sh" ? "🛵" : "🏎️";
+  document.getElementById("racerBuddy").textContent = v === "sh" ? "🏎️" : "🛵";
+  document.getElementById("vehicleLabel").textContent = "Đang lái: " + (v === "sh" ? "Xe SH 🛵" : "Xe Mui Trần 🏎️");
+}
+function updateTrack(){
+  const pos = 2 + (idx / questions.length) * 80;
+  const m = document.getElementById("racerMain");
+  const b = document.getElementById("racerBuddy");
+  m.style.left = pos + "%";
+  b.style.left = Math.max(2, pos - 3) + "%";
+  m.classList.add("jump"); b.classList.add("jump");
+  setTimeout(() => { m.classList.remove("jump"); b.classList.remove("jump"); }, 380);
+  renderObs();
+}
+function loadQ(){
+  answered = false;
+  const q = questions[idx];
+  document.getElementById("qBadge").textContent = "Câu " + (idx + 1) + " / " + questions.length;
+  document.getElementById("stageText").textContent = "Chặng: " + (idx + 1) + " / " + questions.length;
+  document.getElementById("scoreText").textContent = "Điểm: " + score + " / " + questions.length;
+  document.getElementById("qText").textContent = q.q;
+  const box = document.getElementById("optsBox");
+  box.innerHTML = "";
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement("button");
+    btn.className = "opt";
+    btn.textContent = String.fromCharCode(65 + i) + ". " + o;
+    btn.onclick = () => choose(i, btn);
+    box.appendChild(btn);
+  });
+  document.getElementById("fbBox").style.display = "none";
+  document.getElementById("nextBtn").style.display = "none";
+}
+function choose(i, btn){
+  if(answered) return;
+  answered = true;
+  const q = questions[idx];
+  const btns = document.querySelectorAll(".opt");
+  btns.forEach(b => b.disabled = true);
+  if(i === q.ans){ score++; btn.classList.add("correct"); }
+  else { btn.classList.add("wrong"); btns[q.ans].classList.add("correct"); }
+  document.getElementById("scoreText").textContent = "Điểm: " + score + " / " + questions.length;
+  const fb = document.getElementById("fbBox");
+  fb.textContent = (i === q.ans ? "✅ Chính xác! " : "❌ Chưa đúng! ") + q.exp;
+  fb.style.display = "block";
+  document.getElementById("nextBtn").style.display = "inline-block";
+}
+function nextQ(){
+  idx++;
+  updateTrack();
+  if(idx < questions.length){ loadQ(); }
+  else {
+    document.getElementById("quizCard").style.display = "none";
+    document.getElementById("resBox").style.display = "block";
+    document.getElementById("resMsg").textContent = "Xe SH 🛵 và Xe Mui Trần 🏎️ đã vượt bão an toàn về đích tại Cổng Chùa ⛩️ với số điểm " + score + " / " + questions.length + "!";
+  }
+}
+function restart(){
+  idx = 0; score = 0;
+  document.getElementById("quizCard").style.display = "block";
+  document.getElementById("resBox").style.display = "none";
+  document.getElementById("racerMain").style.left = "2%";
+  document.getElementById("racerBuddy").style.left = "2%";
+  renderObs();
+  loadQ();
+}
+renderObs();
+loadQ();
+</script>
+</body>
+</html>
+
+<html lang="vi"><head><meta charset="UTF-8"><title>JET JET – Vượt Bão Về Nhà</title>
