@@ -512,27 +512,12 @@ html.dark .btn-outline-emerald {
 
             <div class="w-12 h-1 rounded-full mb-3" style="background: var(--green-primary);"></div>
 
-            <p class="font-serif-display italic text-2xl sm:text-3xl font-bold mb-4" style="color: var(--green-dark);">
-              1-Click Chạy & Dùng Ngay
-            </p>
 
-            <p class="text-sm opacity-90 leading-relaxed mb-6">
-              Đóng gói toàn bộ các dự án HTML5, Canvas 2D Game, Slide thuyết trình và công cụ tương tác thành kho lưu trữ 1-File HTML chuẩn chỉnh. Sao chép mã nguồn và chạy thử trực tiếp ngay trên trình duyệt!
-            </p>
+            
           </div>
 
-          <!-- Integrated Search Bar inside Left Hero Card -->
-          <div class="pt-2">
-            <div class="p-1.5 rounded-full flex items-center gap-2 border border-emerald-800/20 bg-white dark:bg-emerald-950/80 shadow-sm">
-              <input id="hero-search-input" type="text"
-                     placeholder="Tìm kiếm nhanh dự án HTML..."
-                     class="w-full px-4 py-2 text-sm bg-transparent border-0 focus:outline-none"
-                     aria-label="Tìm dự án HTML">
-              <button type="button" class="btn-emerald shrink-0 py-2 px-5 text-xs" onclick="openBlankSandbox()">
-                Tìm sản phẩm
-              </button>
-            </div>
-          </div>
+
+          
         </div>
 
         <!-- Right Featured Showcase Card (7 Columns) -->
@@ -579,27 +564,10 @@ html.dark .btn-outline-emerald {
       </div>
     </div><div class="studio-card p-6 flex flex-col justify-between gap-4"><div><span class="badge-emerald">📄 Bài tập HTML</span><h3 class="text-xl font-extrabold mt-3 mb-2">Thành Tựu Thành Phố HCM 2021–2026</h3><p class="text-sm opacity-80 leading-relaxed">Trang trình bày các thành tựu nổi bật của Thành phố Hồ Chí Minh giai đoạn 2021–2026.</p></div><div class="flex flex-wrap gap-2 pt-2"><a href="thanh-tuu-thanh-pho-hcm-2021-2026.html" target="_blank" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">▶ Mở trang ngay</a><button type="button" onclick="downloadHtmlFile('thanh-tuu-thanh-pho-hcm-2021-2026.html', 'thanh-tuu-thanh-pho-hcm-2021-2026.html')" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">⬇ Tải về .html</button></div></div>
   </div>
-  <div class="studio-card p-6 border-dashed border-2 border-emerald-500/40">
-    <h3 class="text-lg font-extrabold mb-2">📤 Tải thêm tệp HTML từ máy tính</h3>
-    <p class="text-sm opacity-80 mb-4">Chọn một hoặc nhiều tệp <code>.html</code> / <code>.htm</code> từ máy tính để thêm vào danh sách và chạy thử trực tiếp trên trình duyệt.</p>
-    <input type="file" id="localHtmlUpload" accept=".html,.htm" multiple class="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 cursor-pointer" onchange="handleLocalHtmlFiles(this.files)">
-  </div>
+
 </section>
 <script>
-async function downloadHtmlFile(url, filename){try{const res=await fetch(url);if(!res.ok)throw new Error('HTTP '+res.status);const blob=await res.blob();const blobUrl=URL.createObjectURL(blob);const a=document.createElement('a');a.href=blobUrl;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(blobUrl),1000);}catch(err){const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();}} function handleLocalHtmlFiles(files){
-  const grid = document.getElementById('projects-grid');
-  if(!grid || !files) return;
-  Array.from(files).forEach(file => {
-    const url = URL.createObjectURL(file);
-    const card = document.createElement('div');
-    card.className = 'studio-card p-6 flex flex-col justify-between gap-4';
-    const title = file.name.replace(/\.(html|htm)$/i, '');
-    card.innerHTML = '<div><span class="badge-emerald">💻 Tệp từ máy tính</span><h3 class="text-xl font-extrabold mt-3 mb-2"></h3><p class="text-sm opacity-80">Tệp HTML tải lên từ máy tính (' + Math.round(file.size/1024) + ' KB).</p></div><div class="flex flex-wrap gap-2 pt-2"><a target="_blank" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">▶ Mở chơi trực tiếp</a><button type="button" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">⬇ Tải về .html</button></div>';
-    card.querySelector('h3').textContent = title;
-    card.querySelector('a').href = url; card.querySelector('button').addEventListener('click', () => downloadHtmlFile(url, file.name));
-    grid.appendChild(card);
-  });
-};(async function loadHtmlFilesFromGitHub(){const grid=document.getElementById('projects-grid');if(!grid)return;try{const res=await fetch('https://api.'+'github'+'.com/repos/dinhdang0709/htmlcode-studio/contents');if(!res.ok)return;const items=await res.json();if(!Array.isArray(items))return;const existing=new Set(Array.from(grid.querySelectorAll('a[href]')).map(a=>decodeURIComponent(a.getAttribute('href')||'').toLowerCase()));items.filter(item=>item.type==='file'&&/\.html?$/i.test(item.name)&&item.name.toLowerCase()!=='index.html').forEach(item=>{if(existing.has(item.name.toLowerCase()))return;const card=document.createElement('div');card.className='studio-card p-6 flex flex-col justify-between gap-4';const title=item.name.replace(/\.(html|htm)$/i,'').replace(/[-_]+/g,' ');card.innerHTML='<div><span class="badge-emerald">📄 Tệp GitHub</span><h3 class="text-xl font-extrabold mt-3 mb-2"></h3><p class="text-sm opacity-80 leading-relaxed">Tệp HTML tự động tải từ repository dinhdang0709/htmlcode-studio.</p></div><div class="flex flex-wrap gap-2 pt-2"><a target="_blank" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">▶ Mở trang ngay</a><button type="button" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">⬇ Tải về .html</button></div>';card.querySelector('h3').textContent=title;card.querySelector('a').href=item.name;card.querySelector('button').addEventListener('click',()=>downloadHtmlFile(item.name,item.name));grid.appendChild(card);});}catch(e){console.error(e);}})();
+async function downloadHtmlFile(url, filename){try{const res=await fetch(url);if(!res.ok)throw new Error('HTTP '+res.status);const blob=await res.blob();const blobUrl=URL.createObjectURL(blob);const a=document.createElement('a');a.href=blobUrl;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(blobUrl),1000);}catch(err){const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();}} (async function loadHtmlFilesFromGitHub(){const grid=document.getElementById('projects-grid');if(!grid)return;try{const res=await fetch('https://api.'+'github'+'.com/repos/dinhdang0709/htmlcode-studio/contents');if(!res.ok)return;const items=await res.json();if(!Array.isArray(items))return;const existing=new Set(Array.from(grid.querySelectorAll('a[href]')).map(a=>decodeURIComponent(a.getAttribute('href')||'').toLowerCase()));items.filter(item=>item.type==='file'&&/\.html?$/i.test(item.name)&&item.name.toLowerCase()!=='index.html').forEach(item=>{if(existing.has(item.name.toLowerCase()))return;const card=document.createElement('div');card.className='studio-card p-6 flex flex-col justify-between gap-4';const title=item.name.replace(/\.(html|htm)$/i,'').replace(/[-_]+/g,' ');card.innerHTML='<div><span class="badge-emerald">📄 Tệp GitHub</span><h3 class="text-xl font-extrabold mt-3 mb-2"></h3><p class="text-sm opacity-80 leading-relaxed">Tệp HTML tự động tải từ repository dinhdang0709/htmlcode-studio.</p></div><div class="flex flex-wrap gap-2 pt-2"><a target="_blank" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">▶ Mở trang ngay</a><button type="button" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">⬇ Tải về .html</button></div>';card.querySelector('h3').textContent=title;card.querySelector('a').href=item.name;card.querySelector('button').addEventListener('click',()=>downloadHtmlFile(item.name,item.name));grid.appendChild(card);});}catch(e){console.error(e);}})();
 </script>
     
   </main>
@@ -806,15 +774,8 @@ function bootStudioApp() {
     if (loader) loader.classList.add('hidden-loader');
   }, 380);
 
-  const searchInput = document.getElementById('hero-search-input');
-  if (searchInput) {
-    searchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        openBlankSandbox();
-      }
-    });
-  }
+
+  
 
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
   const mobileDrawer = document.getElementById('mobile-nav-drawer');
