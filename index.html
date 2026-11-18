@@ -1,4 +1,4 @@
-<>!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -577,7 +577,7 @@ html.dark .btn-outline-emerald {
       <div class="flex flex-wrap gap-2 pt-2">
         <a href="jet-jet-vuot-bao-ve-nha.html" target="_blank" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">▶ Mở chơi trực tiếp</a>
       </div>
-    </div>
+    </div><div class="studio-card p-6 flex flex-col justify-between gap-4"><div><span class="badge-emerald">📄 Bài tập HTML</span><h3 class="text-xl font-extrabold mt-3 mb-2">Thành Tựu Thành Phố HCM 2021–2026</h3><p class="text-sm opacity-80 leading-relaxed">Trang trình bày các thành tựu nổi bật của Thành phố Hồ Chí Minh giai đoạn 2021–2026.</p></div><div class="flex flex-wrap gap-2 pt-2"><a href="thanh-tuu-thanh-pho-hcm-2021-2026.html" target="_blank" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">▶ Mở trang ngay</a></div></div>
   </div>
   <div class="studio-card p-6 border-dashed border-2 border-emerald-500/40">
     <h3 class="text-lg font-extrabold mb-2">📤 Tải thêm tệp HTML từ máy tính</h3>
@@ -599,7 +599,7 @@ function handleLocalHtmlFiles(files){
     card.querySelector('a').href = url;
     grid.appendChild(card);
   });
-}
+};(async function loadHtmlFilesFromGitHub(){const grid=document.getElementById('projects-grid');if(!grid)return;try{const res=await fetch('https://api.'+'github'+'.com/repos/dinhdang0709/htmlcode-studio/contents');if(!res.ok)return;const items=await res.json();if(!Array.isArray(items))return;const existing=new Set(Array.from(grid.querySelectorAll('a[href]')).map(a=>decodeURIComponent(a.getAttribute('href')||'').toLowerCase()));items.filter(item=>item.type==='file'&&/\.html?$/i.test(item.name)&&item.name.toLowerCase()!=='index.html').forEach(item=>{if(existing.has(item.name.toLowerCase()))return;const card=document.createElement('div');card.className='studio-card p-6 flex flex-col justify-between gap-4';const title=item.name.replace(/\.(html|htm)$/i,'').replace(/[-_]+/g,' ');card.innerHTML='<div><span class="badge-emerald">📄 Tệp GitHub</span><h3 class="text-xl font-extrabold mt-3 mb-2"></h3><p class="text-sm opacity-80 leading-relaxed">Tệp HTML tự động tải từ repository dinhdang0709/htmlcode-studio.</p></div><div class="flex flex-wrap gap-2 pt-2"><a target="_blank" class="btn-emerald py-2 px-4 text-sm font-bold inline-flex items-center gap-2">▶ Mở trang ngay</a></div>';card.querySelector('h3').textContent=title;card.querySelector('a').href=item.name;grid.appendChild(card);});}catch(e){console.error(e);}})();
 </script>
     
   </main>
